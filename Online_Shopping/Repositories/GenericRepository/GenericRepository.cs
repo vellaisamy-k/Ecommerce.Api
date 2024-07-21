@@ -34,16 +34,10 @@ namespace Ecommerce.Api.Repositories.GenericRepository
             return await _dbContext.Set<T>().FindAsync(id);
         }
 
-        public async void UpdateAsync(int id,T entity)
-        {            
-
-            //_dbContext.Entry(entity).State = EntityState.Modified;
-
+        public async void UpdateAsync(T entity)
+        {  
             _dbContext.Set<T>().Update(entity);
-
-             //_dbContext.Update(entity);
-            await SaveChanges();
-            
+            _dbContext.SaveChanges();           
         }
 
         public bool IsRecordExists(Expression<Func<T, bool>> condition)

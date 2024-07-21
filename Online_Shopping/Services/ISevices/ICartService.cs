@@ -5,10 +5,10 @@ namespace Ecommerce.Api.Services.ISevices
 {
     public interface ICartService
     {
-        Task<CartResponseDto> CreateAsync(CartRequestDto CartDto);
-        Task DeleteAsync(CartRequestDto CartDto);
+        Task<CartResponseDto> CreateAsync(CartRequestDto cartRequestDto);
+        Task DeleteAsync(CartRequestDto cartRequestDto);
         Task<List<CartResponseDto>> GetAllAsync();
         Task<CartResponseDto> GetAsync(int id);       
-        Task UpdateAsync(int id, CartRequestDto CartDto);
+        Task UpdateAsync(int id, CartRequestDto cartRequestDto);
     }
 }

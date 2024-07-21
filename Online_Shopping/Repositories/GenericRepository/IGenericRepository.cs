@@ -8,7 +8,7 @@ namespace Ecommerce.Api.Repositories.GenericRepository
         Task<T> GetAsync(int id);
         Task CreateAsync(T entity);
         Task DeleteAsync(T entity);
-        void UpdateAsync(int id, T entity);
+        void UpdateAsync(T entity);
         Task SaveChanges();
 
         bool IsRecordExists(Expression<Func<T, bool>> exception);

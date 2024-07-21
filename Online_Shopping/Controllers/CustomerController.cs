@@ -1,8 +1,5 @@
-﻿using Ecommerce.Api.DTOs;
-using Ecommerce.Api.DTOs.RequestDtos;
-using Ecommerce.Api.Services;
+﻿using Ecommerce.Api.DTOs.RequestDtos;
 using Ecommerce.Api.Services.ISevices;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Api.Controllers
@@ -19,7 +16,7 @@ namespace Ecommerce.Api.Controllers
         }
 
 
-        [HttpPost("/add")]
+        [HttpPost]
         public async Task<IActionResult> AddCustomer(CustomerRequestDto customerDto)
         {
             var result =  _customerService.IsRecordExists(customerDto);
@@ -34,7 +31,7 @@ namespace Ecommerce.Api.Controllers
 
         }
 
-        [HttpGet("/getall")]
+        [HttpGet]
         public async Task<IActionResult> GetAllCustomer()
         {
             var result = await _customerService.GetAllAsync();
@@ -45,7 +42,7 @@ namespace Ecommerce.Api.Controllers
 
             return Ok(result);
         }
-        [HttpGet("/get/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetCustomerById(int id)
         {
             var result = await _customerService.GetAsync(id);
@@ -56,7 +53,7 @@ namespace Ecommerce.Api.Controllers
             return BadRequest("User is not exists");
         }
 
-        [HttpPut("/update/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCustomer(int id , CustomerRequestDto customerDto)
         {
             // Get customer by id
@@ -66,9 +63,7 @@ namespace Ecommerce.Api.Controllers
             {
                 return BadRequest("Not found");
             }
-            // update the customer
-            // save and return
-
+           
             if (result != null) 
             {
                 await _customerService.UpdateAsync(id, customerDto);
@@ -79,8 +74,7 @@ namespace Ecommerce.Api.Controllers
             return BadRequest("user not exists");    
         }
 
-
-        [HttpDelete("/delete")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteCustomer(CustomerRequestDto customerDto)
         {
             var result =  _customerService.DeleteAsync(customerDto);

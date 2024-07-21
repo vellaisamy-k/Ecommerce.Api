@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Ecommerce.Api.DTOs.RequestDtos;
 using Ecommerce.Api.DTOs.ResponseDto;
-using Ecommerce.Api.Repositories.IRepository;
+using Ecommerce.Api.Repositories.IRepositories;
 using Ecommerce.Api.Models;
 using Ecommerce.Api.Services.ISevices;
 
@@ -9,67 +9,57 @@ namespace Ecommerce.Api.Services
 {
     public class OrderItemService : IOrderItemService
     {
-        private readonly IOrderItemRepository _OrderItemRepository;
+        private readonly IOrderItemRepository _orderItemRepository;
         private readonly IMapper _mapper;
 
-        public OrderItemService(IOrderItemRepository OrderItemRepository, IMapper mapper)
+        public OrderItemService(IOrderItemRepository orderItemRepository, IMapper mapper)
         {
-            _OrderItemRepository = OrderItemRepository;
+            _orderItemRepository = orderItemRepository;
             _mapper = mapper;
 
         }
 
-        public async Task<OrderItemResponseDto> CreateAsync(OrderItemRequestDto OrderItemDto)
+        public async Task<OrderItemResponseDto> CreateAsync(OrderItemRequestDto orderItemRequestDto)
         {
-            var OrderItem = _mapper.Map<OrderItem>(OrderItemDto);
-            await _OrderItemRepository.CreateAsync(OrderItem);
-            await SaveChanges();
-
-            return _mapper.Map<OrderItemResponseDto>(OrderItem);
+            var orderItem = _mapper.Map<OrderItem>(orderItemRequestDto);
+            await _orderItemRepository.CreateAsync(orderItem);
+            return _mapper.Map<OrderItemResponseDto>(orderItem);
 
         }
-        public async Task UpdateAsync(int id, OrderItemRequestDto OrderItemDto)
+        public async Task UpdateAsync(int id, OrderItemRequestDto orderItemRequestDto)
         {
-            var OrderItem = _mapper.Map<OrderItem>(OrderItemDto);
-
-            var res = await _OrderItemRepository.GetAsync(id);
-
-            var cus = _mapper.Map<OrderItem>(res);
-
-            _OrderItemRepository.UpdateAsync(id, cus);
-            //await SaveChanges();           
+            var orderItem = await _orderItemRepository.GetAsync(id);
+            if (orderItem != null)
+            {
+                _mapper.Map(orderItemRequestDto, orderItem);
+                _orderItemRepository.UpdateAsync(orderItem);
+            }
         }
 
 
-        public async Task DeleteAsync(OrderItemRequestDto OrderItemDto)
+        public async Task DeleteAsync(OrderItemRequestDto orderItemRequestDto)
         {
-            var OrderItem = _mapper.Map<OrderItem>(OrderItemDto);
-            await _OrderItemRepository.DeleteAsync(OrderItem);
-            await SaveChanges();
+            var orderItem = _mapper.Map<OrderItem>(orderItemRequestDto);
+            await _orderItemRepository.DeleteAsync(orderItem);
         }
 
         public async Task<List<OrderItemResponseDto>> GetAllAsync()
         {
-            var OrderItems = await _OrderItemRepository.GetAllAsync();
+            var orderItems = await _orderItemRepository.GetAllAsync();
 
-            return _mapper.Map<List<OrderItemResponseDto>>(OrderItems);
+            return _mapper.Map<List<OrderItemResponseDto>>(orderItems);
         }
 
         public async Task<OrderItemResponseDto> GetAsync(int id)
         {
-            var OrderItem = await _OrderItemRepository.GetAsync(id);
+            var orderItem = await _orderItemRepository.GetAsync(id);
 
-            return _mapper.Map<OrderItemResponseDto>(OrderItem);
+            return _mapper.Map<OrderItemResponseDto>(orderItem);
         }
-
-        //public bool IsRecordExists(OrderItemRequestDto OrderItemDto)
-        //{
-        //    return _OrderItemRepository.IsRecordExists(x => x.n.ToLower().Trim() == OrderItemDto.Email.ToLower().Trim());
-        //}
 
         public async Task SaveChanges()
         {
-            await _OrderItemRepository.SaveChanges();
+            await _orderItemRepository.SaveChanges();
         }
     }
 }

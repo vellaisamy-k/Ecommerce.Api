@@ -5,10 +5,10 @@ namespace Ecommerce.Api.Services.ISevices
 {
     public interface IOrderService
     {
-        Task<OrderResponseDto> CreateAsync(OrderRequestDto OrderDto);
-        Task DeleteAsync(OrderRequestDto OrderDto);
+        Task<OrderResponseDto> CreateAsync(OrderRequestDto orderRequestDto);
+        Task DeleteAsync(OrderRequestDto orderRequestDto);
         Task<List<OrderResponseDto>> GetAllAsync();
         Task<OrderResponseDto> GetAsync(int id);
-        Task UpdateAsync(int id, OrderRequestDto OrderDto);
+        Task UpdateAsync(int id, OrderRequestDto orderRequestDto);
     }
 }

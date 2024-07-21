@@ -20,8 +20,7 @@ namespace Ecommerce.Api.AppDbContext.Configurations
             builder.HasMany(e => e.Shipments).WithOne(c => c.Customer).HasForeignKey(c => c.CustomerId).IsRequired().OnDelete(DeleteBehavior.Restrict);
             builder.HasMany(e => e.Orders).WithOne(c => c.Customer).HasForeignKey(c => c.CustomerId).IsRequired().OnDelete(DeleteBehavior.Restrict);
             builder.HasMany(e => e.Carts).WithOne(c => c.Customer).HasForeignKey(c => c.CustomerId).IsRequired().OnDelete(DeleteBehavior.Restrict);
-            builder.HasMany(e => e.Payments).WithOne(c => c.Customer).HasForeignKey(c => c.CustomerId).IsRequired().OnDelete(DeleteBehavior.Restrict);
-            builder.HasMany(e => e.Payments).WithOne(c => c.Customer).HasForeignKey(c => c.CustomerId).IsRequired().OnDelete(DeleteBehavior.Restrict); 
+            builder.HasMany(e => e.Payments).WithOne(c => c.Customer).HasForeignKey(c => c.CustomerId).IsRequired().OnDelete(DeleteBehavior.Restrict);            
             builder.HasMany(e => e.Wishlists).WithOne(c => c.Customer).HasForeignKey(c => c.CustomerId).IsRequired().OnDelete(DeleteBehavior.Restrict);
 
         }       

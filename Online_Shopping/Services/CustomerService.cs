@@ -3,7 +3,7 @@ using Ecommerce.Api.DTOs;
 using Ecommerce.Api.DTOs.RequestDtos;
 using Ecommerce.Api.DTOs.ResponseDto;
 using Ecommerce.Api.Models;
-using Ecommerce.Api.Repositories.IRepository;
+using Ecommerce.Api.Repositories.IRepositories;
 using Ecommerce.Api.Services.ISevices;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System.Linq.Expressions;
@@ -22,39 +22,33 @@ namespace Ecommerce.Api.Services
 
         }
 
-        public async Task<CustomerResponseDto> CreateAsync(CustomerRequestDto customerDto)
+        public async Task<CustomerResponseDto> CreateAsync(CustomerRequestDto customerRequestDto)
         {
-            var customer = _mapper.Map<Customer>(customerDto);           
+            var customer = _mapper.Map<Customer>(customerRequestDto);
             await _customerRepository.CreateAsync(customer);
-            await SaveChanges();
-
             return _mapper.Map<CustomerResponseDto>(customer);
 
         }
-        public async Task UpdateAsync(int id, CustomerRequestDto customerDto)
+        public async Task UpdateAsync(int id, CustomerRequestDto customerRequestDto)
         {
-            var customer = _mapper.Map<Customer>(customerDto);
+            var customer = await _customerRepository.GetAsync(id);
 
-            var res = await _customerRepository.GetAsync(id);
-
-            var cus =  _mapper.Map<Customer>(res);
-
-               _customerRepository.UpdateAsync(id, cus);
-            //await SaveChanges();           
+            if (customer != null)
+            {
+                _mapper.Map(customerRequestDto, customer);
+                _customerRepository.UpdateAsync(customer);
+            }
         }
 
-
-        public async Task DeleteAsync(CustomerRequestDto customerDto)
+        public async Task DeleteAsync(CustomerRequestDto customerRequestDto)
         {
-            var customer = _mapper.Map<Customer>(customerDto);
+            var customer = _mapper.Map<Customer>(customerRequestDto);
             await _customerRepository.DeleteAsync(customer);
-            await SaveChanges();
         }
 
         public async Task<List<CustomerResponseDto>> GetAllAsync()
         {
             var customers = await _customerRepository.GetAllAsync();
-
             return _mapper.Map<List<CustomerResponseDto>>(customers);
         }
 

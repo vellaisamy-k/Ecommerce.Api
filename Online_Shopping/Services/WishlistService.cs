@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Ecommerce.Api.DTOs.RequestDtos;
 using Ecommerce.Api.DTOs.ResponseDto;
-using Ecommerce.Api.Repositories.IRepository;
+using Ecommerce.Api.Repositories.IRepositories;
 using Ecommerce.Api.Models;
 using Ecommerce.Api.Services.ISevices;
 
@@ -9,67 +9,56 @@ namespace Ecommerce.Api.Services
 {
     public class WishlistService : IWishlistService
     {
-        private readonly IWishlistRepository _WishlistRepository;
+        private readonly IWishlistRepository _wishlistRepository;
         private readonly IMapper _mapper;
 
-        public WishlistService(IWishlistRepository WishlistRepository, IMapper mapper)
+        public WishlistService(IWishlistRepository wishlistRepository, IMapper mapper)
         {
-            _WishlistRepository = WishlistRepository;
+            _wishlistRepository = wishlistRepository;
             _mapper = mapper;
-
         }
 
-        public async Task<WishlistResponseDto> CreateAsync(WishlistRequestDto WishlistDto)
+        public async Task<WishlistResponseDto> CreateAsync(WishlistRequestDto wishlistRequestDto)
         {
-            var Wishlist = _mapper.Map<Wishlist>(WishlistDto);
-            await _WishlistRepository.CreateAsync(Wishlist);
-            await SaveChanges();
+            var wishlist = _mapper.Map<Wishlist>(wishlistRequestDto);
+            await _wishlistRepository.CreateAsync(wishlist);
 
-            return _mapper.Map<WishlistResponseDto>(Wishlist);
+            return _mapper.Map<WishlistResponseDto>(wishlist);
 
         }
-        public async Task UpdateAsync(int id, WishlistRequestDto WishlistDto)
+        public async Task UpdateAsync(int id, WishlistRequestDto wishlistRequestDto)
         {
-            var Wishlist = _mapper.Map<Wishlist>(WishlistDto);
-
-            var res = await _WishlistRepository.GetAsync(id);
-
-            var cus = _mapper.Map<Wishlist>(res);
-
-            _WishlistRepository.UpdateAsync(id, cus);
-            //await SaveChanges();           
+            var wishlist = await _wishlistRepository.GetAsync(id);
+            if (wishlist != null)
+            {
+                _mapper.Map(wishlistRequestDto, wishlist);
+                _wishlistRepository.UpdateAsync(wishlist);
+            }
         }
 
-
-        public async Task DeleteAsync(WishlistRequestDto WishlistDto)
+        public async Task DeleteAsync(WishlistRequestDto wishlistRequestDto)
         {
-            var Wishlist = _mapper.Map<Wishlist>(WishlistDto);
-            await _WishlistRepository.DeleteAsync(Wishlist);
-            await SaveChanges();
+            var wishlist = _mapper.Map<Wishlist>(wishlistRequestDto);
+            await _wishlistRepository.DeleteAsync(wishlist);
         }
 
         public async Task<List<WishlistResponseDto>> GetAllAsync()
         {
-            var Wishlists = await _WishlistRepository.GetAllAsync();
+            var wishlists = await _wishlistRepository.GetAllAsync();
 
-            return _mapper.Map<List<WishlistResponseDto>>(Wishlists);
+            return _mapper.Map<List<WishlistResponseDto>>(wishlists);
         }
 
         public async Task<WishlistResponseDto> GetAsync(int id)
         {
-            var Wishlist = await _WishlistRepository.GetAsync(id);
+            var wishlist = await _wishlistRepository.GetAsync(id);
 
-            return _mapper.Map<WishlistResponseDto>(Wishlist);
+            return _mapper.Map<WishlistResponseDto>(wishlist);
         }
-
-        //public bool IsRecordExists(WishlistRequestDto WishlistDto)
-        //{
-        //    return _WishlistRepository.IsRecordExists(x => x.n.ToLower().Trim() == WishlistDto.Email.ToLower().Trim());
-        //}
 
         public async Task SaveChanges()
         {
-            await _WishlistRepository.SaveChanges();
+            await _wishlistRepository.SaveChanges();
         }
     }
 }

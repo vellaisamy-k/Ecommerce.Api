@@ -5,10 +5,10 @@ namespace Ecommerce.Api.Services.ISevices
 {
     public interface IWishlistService
     {
-        Task<WishlistResponseDto> CreateAsync(WishlistRequestDto WishlistDto);
-        Task DeleteAsync(WishlistRequestDto WishlistDto);
+        Task<WishlistResponseDto> CreateAsync(WishlistRequestDto wishlistRequestDto);
+        Task DeleteAsync(WishlistRequestDto wishlistRequestDto);
         Task<List<WishlistResponseDto>> GetAllAsync();
         Task<WishlistResponseDto> GetAsync(int id);
-        Task UpdateAsync(int id, WishlistRequestDto WishlistDto);
+        Task UpdateAsync(int id, WishlistRequestDto wishlistRequestDto);
     }
 }

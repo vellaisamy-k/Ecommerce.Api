@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Ecommerce.Api.DTOs.RequestDtos;
 using Ecommerce.Api.DTOs.ResponseDto;
-using Ecommerce.Api.Repositories.IRepository;
+using Ecommerce.Api.Repositories.IRepositories;
 using Ecommerce.Api.Models;
 using Ecommerce.Api.Services.ISevices;
 
@@ -9,67 +9,57 @@ namespace Ecommerce.Api.Services
 {
     public class ShipmentService : IShipmentService
     {
-        private readonly IShipmentRepository _ShipmentRepository;
+        private readonly IShipmentRepository _shipmentRepository;
         private readonly IMapper _mapper;
 
-        public ShipmentService(IShipmentRepository ShipmentRepository, IMapper mapper)
+        public ShipmentService(IShipmentRepository shipmentRepository, IMapper mapper)
         {
-            _ShipmentRepository = ShipmentRepository;
+            _shipmentRepository = shipmentRepository;
             _mapper = mapper;
 
         }
 
-        public async Task<ShipmentResponseDto> CreateAsync(ShipmentRequestDto ShipmentDto)
+        public async Task<ShipmentResponseDto> CreateAsync(ShipmentRequestDto shipmentRequestDto)
         {
-            var Shipment = _mapper.Map<Shipment>(ShipmentDto);
-            await _ShipmentRepository.CreateAsync(Shipment);
-            await SaveChanges();
-
-            return _mapper.Map<ShipmentResponseDto>(Shipment);
+            var shipment = _mapper.Map<Shipment>(shipmentRequestDto);
+            await _shipmentRepository.CreateAsync(shipment);
+            return _mapper.Map<ShipmentResponseDto>(shipment);
 
         }
-        public async Task UpdateAsync(int id, ShipmentRequestDto ShipmentDto)
+        public async Task UpdateAsync(int id, ShipmentRequestDto shipmentRequestDto)
         {
-            var Shipment = _mapper.Map<Shipment>(ShipmentDto);
+            var shipment = await _shipmentRepository.GetAsync(id);
+            if (shipment != null)
+            {
+                _mapper.Map(shipmentRequestDto, shipment);
 
-            var res = await _ShipmentRepository.GetAsync(id);
-
-            var cus = _mapper.Map<Shipment>(res);
-
-            _ShipmentRepository.UpdateAsync(id, cus);
-            //await SaveChanges();           
+                _shipmentRepository.UpdateAsync(shipment);
+            }
         }
 
-
-        public async Task DeleteAsync(ShipmentRequestDto ShipmentDto)
+        public async Task DeleteAsync(ShipmentRequestDto shipmentRequestDto)
         {
-            var Shipment = _mapper.Map<Shipment>(ShipmentDto);
-            await _ShipmentRepository.DeleteAsync(Shipment);
-            await SaveChanges();
+            var shipment = _mapper.Map<Shipment>(shipmentRequestDto);
+            await _shipmentRepository.DeleteAsync(shipment);
         }
 
         public async Task<List<ShipmentResponseDto>> GetAllAsync()
         {
-            var Shipments = await _ShipmentRepository.GetAllAsync();
+            var shipments = await _shipmentRepository.GetAllAsync();
 
-            return _mapper.Map<List<ShipmentResponseDto>>(Shipments);
+            return _mapper.Map<List<ShipmentResponseDto>>(shipments);
         }
 
         public async Task<ShipmentResponseDto> GetAsync(int id)
         {
-            var Shipment = await _ShipmentRepository.GetAsync(id);
+            var shipment = await _shipmentRepository.GetAsync(id);
 
-            return _mapper.Map<ShipmentResponseDto>(Shipment);
+            return _mapper.Map<ShipmentResponseDto>(shipment);
         }
-
-        //public bool IsRecordExists(ShipmentRequestDto ShipmentDto)
-        //{
-        //    return _ShipmentRepository.IsRecordExists(x => x.n.ToLower().Trim() == ShipmentDto.Email.ToLower().Trim());
-        //}
 
         public async Task SaveChanges()
         {
-            await _ShipmentRepository.SaveChanges();
+            await _shipmentRepository.SaveChanges();
         }
     }
 }

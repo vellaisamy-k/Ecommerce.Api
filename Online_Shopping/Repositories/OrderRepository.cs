@@ -1,7 +1,7 @@
 ﻿using Ecommerce.Api.AppDbContext;
 using Ecommerce.Api.Models;
 using Ecommerce.Api.Repositories.GenericRepository;
-using Ecommerce.Api.Repositories.IRepository;
+using Ecommerce.Api.Repositories.IRepositories;
 
 namespace Ecommerce.Api.Repositories
 {

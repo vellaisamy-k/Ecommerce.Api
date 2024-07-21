@@ -3,7 +3,7 @@ using AutoMapper;
 using Ecommerce.Api.DTOs.RequestDtos;
 using Ecommerce.Api.DTOs.ResponseDto;
 using Ecommerce.Api.Models;
-using Ecommerce.Api.Repositories.IRepository;
+using Ecommerce.Api.Repositories.IRepositories;
 using Ecommerce.Api.Services.ISevices;
 
 namespace Ecommerce.Api.Services
@@ -11,67 +11,55 @@ namespace Ecommerce.Api.Services
     public class CartService : ICartService
     {
 
-        private readonly ICartRepository _CartRepository;
+        private readonly ICartRepository _cartRepository;
         private readonly IMapper _mapper;
 
-        public CartService(ICartRepository CartRepository, IMapper mapper)
+        public CartService(ICartRepository cartRepository, IMapper mapper)
         {
-            _CartRepository = CartRepository;
+            _cartRepository = cartRepository;
             _mapper = mapper;
-
         }
 
-        public async Task<CartResponseDto> CreateAsync(CartRequestDto CartDto)
+        public async Task<CartResponseDto> CreateAsync(CartRequestDto cartRequestDto)
         {
-            var Cart = _mapper.Map<Cart>(CartDto);
-            await _CartRepository.CreateAsync(Cart);
-            await SaveChanges();
-
-            return _mapper.Map<CartResponseDto>(Cart);
+            var cart = _mapper.Map<Cart>(cartRequestDto);
+            await _cartRepository.CreateAsync(cart);
+            return _mapper.Map<CartResponseDto>(cart);
 
         }
-        public async Task UpdateAsync(int id, CartRequestDto CartDto)
+        public async Task UpdateAsync(int id, CartRequestDto cartRequestDto)
         {
-            var Cart = _mapper.Map<Cart>(CartDto);
+            Cart? cart = await _cartRepository.GetAsync(id);
 
-            var res = await _CartRepository.GetAsync(id);
-
-            var cus = _mapper.Map<Cart>(res);
-
-            _CartRepository.UpdateAsync(id, cus);
-            //await SaveChanges();           
+            if (cart == null)
+            {
+                _mapper.Map(cartRequestDto, cart);
+                _cartRepository.UpdateAsync(cart);
+            }
         }
 
 
-        public async Task DeleteAsync(CartRequestDto CartDto)
+        public async Task DeleteAsync(CartRequestDto cartRequestDto)
         {
-            var Cart = _mapper.Map<Cart>(CartDto);
-            await _CartRepository.DeleteAsync(Cart);
-            await SaveChanges();
+            var cart = _mapper.Map<Cart>(cartRequestDto);
+            await _cartRepository.DeleteAsync(cart);
         }
 
         public async Task<List<CartResponseDto>> GetAllAsync()
         {
-            var Carts = await _CartRepository.GetAllAsync();
-
-            return _mapper.Map<List<CartResponseDto>>(Carts);
+            var carts = await _cartRepository.GetAllAsync();
+            return _mapper.Map<List<CartResponseDto>>(carts);
         }
 
         public async Task<CartResponseDto> GetAsync(int id)
         {
-            var Cart = await _CartRepository.GetAsync(id);
+            var cart = await _cartRepository.GetAsync(id);
 
-            return _mapper.Map<CartResponseDto>(Cart);
+            return _mapper.Map<CartResponseDto>(cart);
         }
-
-        //public bool IsRecordExists(CartRequestDto CartDto)
-        //{
-        //    return _CartRepository.IsRecordExists(x => x.n.ToLower().Trim() == CartDto.Email.ToLower().Trim());
-        //}
-
         public async Task SaveChanges()
         {
-            await _CartRepository.SaveChanges();
+            await _cartRepository.SaveChanges();
         }
     }
 }

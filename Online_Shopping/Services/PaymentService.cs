@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Ecommerce.Api.DTOs.RequestDtos;
 using Ecommerce.Api.DTOs.ResponseDto;
-using Ecommerce.Api.Repositories.IRepository;
+using Ecommerce.Api.Repositories.IRepositories;
 using Ecommerce.Api.Models;
 using Ecommerce.Api.Services.ISevices;
 
@@ -9,67 +9,57 @@ namespace Ecommerce.Api.Services
 {
     public class PaymentService : IPaymentService
     {
-        private readonly IOrderRepository _OrderRepository;
+        private readonly IPaymentRepository _paymentRepository;
         private readonly IMapper _mapper;
 
-        public PaymentService(IOrderRepository OrderRepository, IMapper mapper)
+        public PaymentService(IPaymentRepository paymentRepository, IMapper mapper)
         {
-            _OrderRepository = OrderRepository;
+            _paymentRepository = paymentRepository;
             _mapper = mapper;
 
         }
 
-        public async Task<OrderResponseDto> CreateAsync(OrderRequestDto OrderDto)
+        public async Task<PaymentResponseDto> CreateAsync(PaymentRequestDto paymentRequestDto)
         {
-            var Order = _mapper.Map<Order>(OrderDto);
-            await _OrderRepository.CreateAsync(Order);
-            await SaveChanges();
-
-            return _mapper.Map<OrderResponseDto>(Order);
+            var payment = _mapper.Map<Payment>(paymentRequestDto);
+            await _paymentRepository.CreateAsync(payment);            
+            return _mapper.Map<PaymentResponseDto>(payment);
 
         }
-        public async Task UpdateAsync(int id, OrderRequestDto OrderDto)
+        public async Task UpdateAsync(int id, PaymentRequestDto paymentRequestDto)
         {
-            var Order = _mapper.Map<Order>(OrderDto);
+            var payment = await _paymentRepository.GetAsync(id);
 
-            var res = await _OrderRepository.GetAsync(id);
-
-            var cus = _mapper.Map<Order>(res);
-
-            _OrderRepository.UpdateAsync(id, cus);
-            //await SaveChanges();           
+            if (payment != null)
+            {
+                _mapper.Map(paymentRequestDto, payment);
+                _paymentRepository.UpdateAsync(payment);
+            }
         }
 
-
-        public async Task DeleteAsync(OrderRequestDto OrderDto)
+        public async Task DeleteAsync(PaymentRequestDto paymentRequestDto)
         {
-            var Order = _mapper.Map<Order>(OrderDto);
-            await _OrderRepository.DeleteAsync(Order);
-            await SaveChanges();
+            var payment = _mapper.Map<Payment>(paymentRequestDto);
+            await _paymentRepository.DeleteAsync(payment);          
         }
 
-        public async Task<List<OrderResponseDto>> GetAllAsync()
+        public async Task<List<PaymentResponseDto>> GetAllAsync()
         {
-            var Orders = await _OrderRepository.GetAllAsync();
+            var payments = await _paymentRepository.GetAllAsync();
 
-            return _mapper.Map<List<OrderResponseDto>>(Orders);
+            return _mapper.Map<List<PaymentResponseDto>>(payments);
         }
 
-        public async Task<OrderResponseDto> GetAsync(int id)
+        public async Task<PaymentResponseDto> GetAsync(int id)
         {
-            var Order = await _OrderRepository.GetAsync(id);
+            var payment = await _paymentRepository.GetAsync(id);
 
-            return _mapper.Map<OrderResponseDto>(Order);
+            return _mapper.Map<PaymentResponseDto>(payment);
         }
-
-        //public bool IsRecordExists(OrderRequestDto OrderDto)
-        //{
-        //    return _OrderRepository.IsRecordExists(x => x.n.ToLower().Trim() == OrderDto.Email.ToLower().Trim());
-        //}
 
         public async Task SaveChanges()
         {
-            await _OrderRepository.SaveChanges();
+            await _paymentRepository.SaveChanges();
         }
     }
 }

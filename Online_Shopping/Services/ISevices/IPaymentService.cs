@@ -5,10 +5,10 @@ namespace Ecommerce.Api.Services.ISevices
 {
     public interface IPaymentService
     {
-        Task<PaymentResponseDto> CreateAsync(CartRequestDto CartDto);
-        Task DeleteAsync(CartRequestDto CartDto);
-        Task<List<CartResponseDto>> GetAllAsync();
-        Task<CartResponseDto> GetAsync(int id);
-        Task UpdateAsync(int id, CartRequestDto CartDto);
+        Task<PaymentResponseDto> CreateAsync(PaymentRequestDto paymentRequestDto);
+        Task DeleteAsync(PaymentRequestDto paymentRequestDto);
+        Task<List<PaymentResponseDto>> GetAllAsync();
+        Task<PaymentResponseDto> GetAsync(int id);
+        Task UpdateAsync(int id, PaymentRequestDto paymentRequestDto);
     }
 }

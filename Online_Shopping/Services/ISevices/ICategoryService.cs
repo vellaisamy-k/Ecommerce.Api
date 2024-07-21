@@ -5,10 +5,10 @@ namespace Ecommerce.Api.Services.ISevices
 {
     public interface ICategoryService
     {
-        Task<CategoryResponseDto> CreateAsync(CategoryRequestDto CategoryDto);
-        Task DeleteAsync(CategoryRequestDto CategoryDto);
+        Task<CategoryResponseDto> CreateAsync(CategoryRequestDto categoryRequestDto);
+        Task DeleteAsync(CategoryRequestDto categoryRequestDto);
         Task<List<CategoryResponseDto>> GetAllAsync();
         Task<CategoryResponseDto> GetAsync(int id);
-        Task UpdateAsync(int id, CategoryRequestDto CategoryDto);
+        Task UpdateAsync(int id, CategoryRequestDto categoryRequestDto);
     }
 }
