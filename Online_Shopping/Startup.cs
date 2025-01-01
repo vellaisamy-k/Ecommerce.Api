@@ -27,9 +27,25 @@ namespace Ecommerce.Api
             services.AddDbContext<EcommerceDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DbConnection")));
 
             //dependencies
+           
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
-            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<ICartService,CartService>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IPaymentRepository,PaymentRepository>();
+            services.AddScoped<IPaymentService,PaymentService>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IShipmentRepository, ShipmentRepository>();
+            services.AddScoped<IShipmentService, ShipmentService>();
+            services.AddScoped<IWishlistRepository, WishlistRepository>();
+            services.AddScoped<IWishlistService, WishlistService>();
+
 
             //Mapper
             services.AddAutoMapper(typeof(MappingProfile));
